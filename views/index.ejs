@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title || 'News Aggregator' %></title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="/" class="navbar-logo">📰 News Aggregator</a>
+            <ul class="nav-menu">
+                <% if (user) { %>
+                    <li><a href="/feed">Feed</a></li>
+                    <li><a href="/saved">Saved</a></li>
+                    <li><a href="/preferences">Preferences</a></li>
+                    <li><a href="/digest">Digest</a></li>
+                    <li><a href="/dashboard">Dashboard</a></li>
+                    <li><a href="/logout" class="btn-logout">Logout</a></li>
+                    <li class="user-info">Welcome, <%= user.username %></li>
+                <% } else { %>
+                    <li><a href="/login">Login</a></li>
+                    <li><a href="/register">Register</a></li>
+                <% } %>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1>Welcome to News Aggregator</h1>
+
+        <div class="home-hero">
+            <div class="hero-content">
+                <h2>Stay Updated with the Latest News</h2>
+                <p>Get personalized news feeds, save your favorite articles, and discuss with the community.</p>
+                
+                <% if (!user) { %>
+                    <div class="cta-buttons">
+                        <a href="/register" class="btn btn-primary">Create Account</a>
+                        <a href="/login" class="btn btn-secondary">Login</a>
+                    </div>
+                <% } else { %>
+                    <div class="cta-buttons">
+                        <a href="/feed" class="btn btn-primary">View Feed</a>
+                        <a href="/digest" class="btn btn-secondary">Daily Digest</a>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+
+        <div class="features">
+            <div class="feature-card">
+                <h3>📰 News Feed</h3>
+                <p>Browse news from multiple categories with real-time updates</p>
+            </div>
+            <div class="feature-card">
+                <h3>💾 Save Articles</h3>
+                <p>Bookmark articles to read later and organize your reading list</p>
+            </div>
+            <div class="feature-card">
+                <h3>⚙️ Preferences</h3>
+                <p>Customize your interests and preferred sources</p>
+            </div>
+            <div class="feature-card">
+                <h3>📧 Daily Digest</h3>
+                <p>Get personalized news summary based on your interests</p>
+            </div>
+            <div class="feature-card">
+                <h3>💬 Comments</h3>
+                <p>Discuss articles with the community</p>
+            </div>
+            <div class="feature-card">
+                <h3>📊 Dashboard</h3>
+                <p>Track your reading activity and preferences</p>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2025 News Aggregator. All rights reserved.</p>
+    </footer>
+
+    <script src="/js/main.js"></script>
+</body>
+</html>

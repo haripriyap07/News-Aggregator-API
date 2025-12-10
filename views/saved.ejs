@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title || 'Saved Articles' %></title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="/" class="navbar-logo">📰 News Aggregator</a>
+            <ul class="nav-menu">
+                <li><a href="/feed">Feed</a></li>
+                <li><a href="/saved">Saved</a></li>
+                <li><a href="/preferences">Preferences</a></li>
+                <li><a href="/digest">Digest</a></li>
+                <li><a href="/dashboard">Dashboard</a></li>
+                <li><a href="/logout" class="btn-logout">Logout</a></li>
+                <li class="user-info">Welcome, <%= user.username %></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1>Saved Articles</h1>
+
+<% if (savedArticles && savedArticles.length > 0) { %>
+    <div class="articles-grid">
+        <% savedArticles.forEach(article => { %>
+            <div class="article-card">
+                <% if (article.imageUrl) { %>
+                    <img src="<%= article.imageUrl %>" alt="<%= article.title %>" class="article-image">
+                <% } else { %>
+                    <div class="article-image-placeholder">No Image</div>
+                <% } %>
+                
+                <div class="article-content">
+                    <span class="article-source"><%= article.sourceName %></span>
+                    <h3><%= article.title %></h3>
+                    <p class="article-description"><%= article.description || 'No description available' %></p>
+                    
+                    <div class="article-meta">
+                        <span class="article-date">
+                            Saved: <%= new Date(article.savedAt).toLocaleDateString() %>
+                        </span>
+                        <span class="article-published">
+                            Published: <%= new Date(article.publishedAt).toLocaleDateString() %>
+                        </span>
+                    </div>
+
+                    <div class="article-actions">
+                        <a href="<%= article.url %>" target="_blank" class="btn btn-small btn-primary">Read More</a>
+                        <form method="POST" action="/saved/<%= article._id %>?_method=DELETE" style="display: inline;">
+                            <button type="submit" class="btn btn-small btn-danger">🗑️ Delete</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        <% }); %>
+    </div>
+<% } else { %>
+    <div class="no-articles">
+        <h2>No Saved Articles Yet</h2>
+        <p>Start saving articles from the <a href="/feed">news feed</a> to see them here.</p>
+    </div>
+<% } %>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2025 News Aggregator. All rights reserved.</p>
+    </footer>
+
+    <script src="/js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title || 'News Feed' %></title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="/" class="navbar-logo">📰 News Aggregator</a>
+            <ul class="nav-menu">
+                <li><a href="/feed">Feed</a></li>
+                <li><a href="/saved">Saved</a></li>
+                <li><a href="/preferences">Preferences</a></li>
+                <li><a href="/digest">Digest</a></li>
+                <li><a href="/dashboard">Dashboard</a></li>
+                <li><a href="/logout" class="btn-logout">Logout</a></li>
+                <li class="user-info">Welcome, <%= user.username %></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1>News Feed</h1>
+
+        <div class="feed-controls">
+    <form method="GET" action="/feed" class="filter-form">
+        <select name="category" onchange="this.form.submit()">
+            <option value="">All Categories</option>
+            <option value="business" <%= category === 'business' ? 'selected' : '' %>>Business</option>
+            <option value="entertainment" <%= category === 'entertainment' ? 'selected' : '' %>>Entertainment</option>
+            <option value="general" <%= category === 'general' ? 'selected' : '' %>>General</option>
+            <option value="health" <%= category === 'health' ? 'selected' : '' %>>Health</option>
+            <option value="science" <%= category === 'science' ? 'selected' : '' %>>Science</option>
+            <option value="sports" <%= category === 'sports' ? 'selected' : '' %>>Sports</option>
+            <option value="technology" <%= category === 'technology' ? 'selected' : '' %>>Technology</option>
+        </select>
+    </form>
+</div>
+
+<div class="articles-grid">
+    <% if (articles && articles.length > 0) { %>
+        <% articles.forEach(article => { %>
+            <div class="article-card">
+                <% if (article.urlToImage) { %>
+                    <img src="<%= article.urlToImage %>" alt="<%= article.title %>" class="article-image">
+                <% } else { %>
+                    <div class="article-image-placeholder">No Image</div>
+                <% } %>
+                
+                <div class="article-content">
+                    <span class="article-source"><%= article.source.name %></span>
+                    <h3><%= article.title %></h3>
+                    <p class="article-description"><%= article.description || 'No description available' %></p>
+                    
+                    <div class="article-meta">
+                        <span class="article-date"><%= new Date(article.publishedAt).toLocaleDateString() %></span>
+                        <span class="article-author"><%= article.author || 'Unknown' %></span>
+                    </div>
+
+                    <div class="article-actions">
+                        <a href="<%= article.url %>" target="_blank" class="btn btn-small btn-primary">Read More</a>
+                        <form method="POST" action="/saved/save" style="display: inline;">
+                            <input type="hidden" name="url" value="<%= article.url %>">
+                            <input type="hidden" name="title" value="<%= article.title %>">
+                            <input type="hidden" name="description" value="<%= article.description || '' %>">
+                            <input type="hidden" name="sourceName" value="<%= article.source.name %>">
+                            <input type="hidden" name="imageUrl" value="<%= article.urlToImage || '' %>">
+                            <input type="hidden" name="publishedAt" value="<%= article.publishedAt %>">
+                            <button type="submit" class="btn btn-small btn-secondary">💾 Save</button>
+                        </form>
+                        <button class="btn btn-small btn-comment" onclick="toggleComments('<%= article.url %>')">💬 Comments</button>
+                    </div>
+
+                    <!-- Comments Section -->
+                    <div class="comments-section" id="comments-<%= article.url %>" style="display: none;">
+                        <div class="comments-list" id="comments-list-<%= article.url %>">
+                            <!-- Comments will be loaded here -->
+                        </div>
+                        
+                        <form method="POST" action="/comments" class="comment-form">
+                            <input type="hidden" name="articleUrl" value="<%= article.url %>">
+                            <textarea name="text" placeholder="Add a comment..." required rows="2"></textarea>
+                            <button type="submit" class="btn btn-small btn-primary">Post Comment</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        <% }); %>
+    <% } else { %>
+        <div class="no-articles">
+            <p>No articles found. Try selecting a different category or check back later.</p>
+        </div>
+    <% } %>
+</div>
+
+<script>
+    function toggleComments(articleUrl) {
+        const commentsDiv = document.getElementById(`comments-${articleUrl}`);
+        const commentsList = document.getElementById(`comments-list-${articleUrl}`);
+        
+        if (commentsDiv.style.display === 'none') {
+            commentsDiv.style.display = 'block';
+            loadComments(articleUrl, commentsList);
+        } else {
+            commentsDiv.style.display = 'none';
+        }
+    }
+
+    function loadComments(articleUrl, container) {
+        fetch(`/comments?articleUrl=${encodeURIComponent(articleUrl)}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data.comments && data.comments.length > 0) {
+                    container.innerHTML = data.comments.map(comment => `
+                        <div class="comment">
+                            <strong>${comment.user ? comment.user.username : 'Anonymous'}</strong>
+                            <p>${comment.text}</p>
+                            <small>${new Date(comment.createdAt).toLocaleString()}</small>
+                        </div>
+                    `).join('');
+                } else {
+                    container.innerHTML = '<p class="no-comments">No comments yet. Be the first!</p>';
+                }
+            })
+            .catch(err => console.error('Error loading comments:', err));
+    }
+</script>
+
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2025 News Aggregator. All rights reserved.</p>
+    </footer>
+
+    <script src="/js/main.js"></script>
+</body>
+</html>

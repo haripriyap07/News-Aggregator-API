@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title || 'News Aggregator' %></title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="/" class="navbar-logo">📰 News Aggregator</a>
+            <ul class="nav-menu">
+                <% if (user) { %>
+                    <li><a href="/feed">Feed</a></li>
+                    <li><a href="/saved">Saved</a></li>
+                    <li><a href="/preferences">Preferences</a></li>
+                    <li><a href="/digest">Digest</a></li>
+                    <li><a href="/dashboard">Dashboard</a></li>
+                    <li><a href="/logout" class="btn-logout">Logout</a></li>
+                    <li class="user-info">Welcome, <%= user.username %></li>
+                <% } else { %>
+                    <li><a href="/login">Login</a></li>
+                    <li><a href="/register">Register</a></li>
+                <% } %>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <% if (successMessage) { %>
+            <div class="alert alert-success">
+                <%= successMessage %>
+            </div>
+        <% } %>
+        <% if (errorMessage) { %>
+            <div class="alert alert-danger">
+                <%= errorMessage %>
+            </div>
+        <% } %>
+        
+        <%- body %>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2025 News Aggregator. All rights reserved.</p>
+    </footer>
+
+    <script src="/js/main.js"></script>
+</body>
+</html>

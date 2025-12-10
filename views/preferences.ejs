@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title || 'Preferences' %></title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="/" class="navbar-logo">📰 News Aggregator</a>
+            <ul class="nav-menu">
+                <li><a href="/feed">Feed</a></li>
+                <li><a href="/saved">Saved</a></li>
+                <li><a href="/preferences">Preferences</a></li>
+                <li><a href="/digest">Digest</a></li>
+                <li><a href="/dashboard">Dashboard</a></li>
+                <li><a href="/logout" class="btn-logout">Logout</a></li>
+                <li class="user-info">Welcome, <%= user.username %></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1>Preferences</h1>
+
+<div class="preferences-container">
+    <form method="POST" action="/preferences" class="preferences-form">
+        <fieldset>
+            <legend>Interests</legend>
+            <p class="form-help">Select your areas of interest</p>
+            
+            <div class="checkbox-group">
+                <% const interests = ['Technology', 'Business', 'Science', 'Health', 'Sports', 'Entertainment', 'Politics', 'Sports']; %>
+                <% interests.forEach(interest => { %>
+                    <div class="checkbox-item">
+                        <input 
+                            type="checkbox" 
+                            id="<%= interest.toLowerCase() %>" 
+                            name="interests" 
+                            value="<%= interest %>"
+                            <%= preferences && preferences.interests && preferences.interests.includes(interest) ? 'checked' : '' %>
+                        >
+                        <label for="<%= interest.toLowerCase() %>"><%= interest %></label>
+                    </div>
+                <% }); %>
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <legend>Preferred News Sources</legend>
+            <p class="form-help">Choose your preferred news sources (comma-separated)</p>
+            
+            <textarea 
+                name="preferredSources" 
+                placeholder="e.g., BBC, CNN, Reuters, TechCrunch"
+                rows="3"
+            ><%= preferences && preferences.preferredSources ? preferences.preferredSources.join(', ') : '' %></textarea>
+        </fieldset>
+
+        <fieldset>
+            <legend>Keyword Filters</legend>
+            <p class="form-help">Enter keywords to filter articles (comma-separated)</p>
+            
+            <textarea 
+                name="keywordFilters" 
+                placeholder="e.g., Artificial Intelligence, blockchain, climate change"
+                rows="3"
+            ><%= preferences && preferences.keywordFilters ? preferences.keywordFilters.join(', ') : '' %></textarea>
+        </fieldset>
+
+        <fieldset>
+            <legend>Notification Settings</legend>
+            
+            <div class="checkbox-item">
+                <input 
+                    type="checkbox" 
+                    id="emailDigest" 
+                    name="emailDigest"
+                    <%= preferences && preferences.emailDigest ? 'checked' : '' %>
+                >
+                <label for="emailDigest">Receive Daily Digest via Email</label>
+            </div>
+
+            <div class="checkbox-item">
+                <input 
+                    type="checkbox" 
+                    id="pushNotifications" 
+                    name="pushNotifications"
+                    <%= preferences && preferences.pushNotifications ? 'checked' : '' %>
+                >
+                <label for="pushNotifications">Enable Push Notifications</label>
+            </div>
+        </fieldset>
+
+        button type=\"submit\" class=\"btn btn-primary btn-block\">Save Preferences</button>
+    </form>
+    </div>
+
+    <footer class=\"footer\">
+        <p>&copy; 2025 News Aggregator. All rights reserved.</p>
+    </footer>
+
+    <script src=\"/js/main.js\"></script>
+</body>
+</html>
+
+<style>
+    fieldset {
+        margin-bottom: 2rem;
+        padding: 1.5rem;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+
+    legend {
+        padding: 0 0.5rem;
+        font-weight: bold;
+        color: #333;
+    }
+
+    .checkbox-group {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+
+    .checkbox-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .checkbox-item input[type="checkbox"] {
+        cursor: pointer;
+    }
+
+    .checkbox-item label {
+        cursor: pointer;
+        margin: 0;
+    }
+
+    textarea {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-family: inherit;
+    }
+
+    .form-help {
+        color: #666;
+        font-size: 0.9rem;
+        margin: 0.5rem 0;
+    }
+</style>
